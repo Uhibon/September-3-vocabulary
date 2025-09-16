@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Boo-riculum – People at School Deck</title>
+  <link rel="icon" type="image/png" href="booha-ghost.png">
+  <style>
+    :root { --ink:#222; --muted:#444; --accent:#0b78ff; --ok:#22c55e; --bad:#ef4444; }
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif;
+      color:var(--ink);
+      background:url('Booha card.jpg') center/cover fixed no-repeat;
+    }
+    .wrap{max-width:900px;margin:0 auto;padding:16px 16px 24px;}
+    header{
+      display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;
+      margin-bottom:12px;background:rgba(255,255,255,0.88);padding:12px 16px;
+      border-radius:16px;box-shadow:0 4px 10px rgba(0,0,0,0.15)
+    }
+    header h1{
+      font-size:18px;margin:0;font-weight:700;letter-spacing:.2px;
+      background:linear-gradient(90deg,#7dd3fc,#60a5fa,#a78bfa,#f472b6);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      display:flex;align-items:center;gap:8px
+    }
+    header h1 img{height:28px;width:auto;}
+    .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    select,button{
+      background:rgba(255,255,255,0.95);color:var(--ink);border:1px solid #ccc;
+      border-radius:12px;padding:10px 12px;font-size:14px;
+      box-shadow:0 2px 5px rgba(0,0,0,0.08)
+    }
+    button{cursor:pointer;transition:transform .05s ease, background .2s}
+    button:hover{background:#f0f0f0}
+    button:active{transform:scale(.98)}
+    .pill{border:1px solid #ccc;border-radius:999px;padding:6px 10px;font-size:12px;background:rgba(255,255,255,0.7)}
+    .card{
+      user-select:none;-webkit-user-select:none;display:flex;flex-direction:column;justify-content:center;align-items:center;
+      text-align:center;background:url('Booha card.jpg') center/cover no-repeat;
+      border:1px solid #ccc;border-radius:24px;min-height:56vh;margin:16px auto;padding:22px 18px 28px;
+      box-shadow:0 10px 40px rgba(0,0,0,.25); position:relative;
+    }
+    .brand{
+      position:absolute;top:10px;left:12px;display:flex;gap:8px;align-items:center;
+      background:rgba(255,255,255,0.85);padding:6px 10px;border-radius:12px;border:1px solid #ddd;
+      box-shadow:0 2px 6px rgba(0,0,0,0.08); font-weight:800; letter-spacing:.2px;
+    }
+    .brand img{height:20px;width:auto}
+    .brand span{background:linear-gradient(90deg,#7dd3fc,#60a5fa,#a78bfa,#f472b6);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    .label{color:var(--muted);font-size:13px;letter-spacing:.3px;margin-bottom:8px;
+      background:rgba(255,255,255,0.7);padding:4px 8px;border-radius:8px}
+    .main{font-size:28px;line-height:1.25;font-weight:800;margin:8px 0 10px;
+      background:rgba(255,255,255,0.86);padding:8px 12px;border-radius:12px}
+    .sub{font-size:18px;opacity:.92;margin:0 0 6px;background:rgba(255,255,255,0.65);
+      padding:4px 10px;border-radius:8px}
+    .hira{font-size:18px;color:var(--accent);opacity:.95;background:rgba(255,255,255,0.75);
+      padding:4px 10px;border-radius:8px}
+    .muted{color:var(--muted)}
+    .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+    .footer{
+      display:flex;align-items:center;justify-content:space-between;margin-top:8px;color:var(--muted);font-size:13px;
+      background:rgba(255,255,255,0.85);padding:8px 12px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1)
+    }
+    .progress{height:8px;border-radius:999px;background:#eee;overflow:hidden}
+    .progress>span{display:block;height:100%;background:linear-gradient(90deg,#7dd3fc,#60a5fa,#a78bfa,#f472b6);width:0%}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    @media (max-width:700px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));} .main{font-size:24px}}
+    a{color:#0b78ff;text-decoration:none}
+    .hidden{display:none}
+    .options{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+    .optbtn{border:1px solid #ccc;border-radius:12px;padding:10px 14px;background:rgba(255,255,255,0.95);cursor:pointer}
+    .optbtn.ok{background:#dcfce7;border-color:#86efac;color:#166534}
+    .optbtn.bad{background:#fee2e2;border-color:#fca5a5;color:#991b1b}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1><img src="booha-ghost.png" alt="Booha ghost"> Boo-riculum – People at School</h1>
+      <div class="controls">
+        <select id="mode" aria-label="Mode">
+          <option value="vocab-j2e">Vocab: 🇯🇵 → 🇺🇸</option>
+          <option value="vocab-e2j">Vocab: 🇺🇸 → 🇯🇵</option>
+          <option value="sentences">Sentences (practice)</option>
+          <option value="qa">Questions (practice)</option>
+          <option value="quiz">Quiz (multiple choice)</option>
+        </select>
+      </div>
+    </header>
+
+    <div id="card" class="card" role="button" aria-label="flashcard" tabindex="0">
+      <div class="brand"><img src="booha-ghost.png" alt="Booha ghost"><span>Boo-riculum</span></div>
+      <div id="label" class="label">Front</div>
+      <div id="main" class="main">—</div>
+      <div id="sub" class="sub muted">Tap or press Space to flip</div>
+      <div id="hira" class="hira hidden"></div>
+      <div id="mcArea" class="options hidden"></div>
+    </div>
+
+    <div class="footer">
+      <div class="row">
+        <span class="pill" title="Left / Right keys">Keyboard: ← →</span>
+        <span class="pill" title="Space to flip">Space = Flip</span>
+        <button id="btnPrev" title="← or swipe right">◀︎ Prev</button>
+        <button id="btnFlip" title="Tap / Space">Flip</button>
+        <button id="btnNext" title="→ or swipe left">Next ▶︎</button>
+        <button id="btnShuffle" title="Shuffle deck">Shuffle</button>
+      </div>
+      <div style="min-width:180px;text-align:right">
+        <div id="counter" class="muted">0 / 0</div>
+        <div class="progress" aria-hidden="true"><span id="bar"></span></div>
+      </div>
+    </div>
+
+    <section style="margin-top:18px">
+      <details>
+        <summary class="muted">Deck contents & teacher notes</summary>
+        <div class="grid" style="margin-top:10px">
+          <div><strong>People</strong><br>teacher / 先生（せんせい）<br>student / 生徒（せいと）<br>principal / 校長先生（こうちょうせんせい）<br>nurse / 保健の先生（ほけんの せんせい）<br>librarian / 図書館の先生（としょかんの せんせい）<br>janitor / 用務員さん（ようむいんさん）<br>counselor / カウンセラー（かうんせらー）<br>vice principal / 教頭先生（きょうとうせんせい）<br>office worker / 事務の人（じむの ひと）<br>lunch staff / 給食のスタッフ（きゅうしょくの すたっふ）</div>
+          <div><strong>Roles</strong><br>teach / 教える（おしえる）<br>help / 助ける（たすける）<br>clean / 掃除する（そうじする）<br>manage / 管理する（かんりする）<br>guide / 指導する（しどうする）<br>write / 書く（かく）<br>read / 読む（よむ）<br>talk / 話す（はなす）<br>check / はかる（はかる）<br>organize / 整理する（せいりする）<br>open / 開ける（あける）<br>listen / 聞く（きく）<br>serve / 出す（だす）<br>answer / 出る（でる）</div>
+          <div><strong>Tips</strong><br>
+            • Use <em>Vocab</em> for fast output drills.<br>
+            • Move to <em>Sentences</em> for controlled production.<br>
+            • Use <em>Questions</em> for pair Q&A (no multiple choice).<br>
+            • Finish with <em>Quiz</em> for recall via multiple choice (instant reveal).<br>
+            • Simple Japanese is always shown under Japanese.<br>
+          </div>
+        </div>
+      </details>
+    </section>
+  </div>
+
+  <script>
+    // ---------------- Data ----------------
+    const PEOPLE = [
+      { en: 'teacher',   ja: '先生',           hira: 'せんせい' },
+      { en: 'student',   ja: '生徒',           hira: 'せいと' },
+      { en: 'principal', ja: '校長先生',       hira: 'こうちょうせんせい' },
+      { en: 'nurse',     ja: '保健の先生',     hira: 'ほけんの せんせい' },
+      { en: 'librarian', ja: '図書館の先生',   hira: 'としょかんの せんせい' },
+      { en: 'janitor',   ja: '用務員さん',     hira: 'ようむいんさん' },
+      { en: 'counselor', ja: 'カウンセラー',   hira: 'かうんせらー' },
+      { en: 'vice principal', ja: '教頭先生',  hira: 'きょうとうせんせい' },
+      { en: 'office worker',  ja: '事務の人',  hira: 'じむの ひと' },
+      { en: 'lunch staff',    ja: '給食のスタッフ', hira: 'きゅうしょくの すたっふ' },
+    ];
+
+    const ROLES = [
+      { en: 'teach',   ja: '教える',    hira: 'おしえる' },
+      { en: 'help',    ja: '助ける',    hira: 'たすける' },
+      { en: 'clean',   ja: '掃除する',  hira: 'そうじする' },
+      { en: 'manage',  ja: '管理する',  hira: 'かんりする' },
+      { en: 'guide',   ja: '指導する',  hira: 'しどうする' },
+      { en: 'write',   ja: '書く',      hira: 'かく' },
+      { en: 'read',    ja: '読む',      hira: 'よむ' },
+      { en: 'talk',    ja: '話す',      hira: 'はなす' },
+      { en: 'check',   ja: 'はかる',    hira: 'はかる' },
+      { en: 'organize',ja: '整理する',  hira: 'せいりする' },
+      { en: 'open',    ja: '開ける',    hira: 'あける' },
+      { en: 'listen',  ja: '聞く',      hira: 'きく' },
+      { en: 'serve',   ja: '出す',      hira: 'だす' },
+      { en: 'answer',  ja: '出る',      hira: 'でる' },
+    ];
+
+    const SENTENCES = [
+      { en: 'The teacher teaches math.', ja: '先生は数学を教えます。', hira: 'せんせいは すうがくを おしえます。' },
+      { en: 'Students listen to the teacher.', ja: '生徒たちは先生の話を聞きます。', hira: 'せいとたちは せんせいの はなしを ききます。' },
+      { en: 'The principal manages the school.', ja: '校長先生は学校を管理します。', hira: 'こうちょうせんせいは がっこうを かんりします。' },
+      { en: 'The nurse helps sick students.', ja: '保健の先生は具合が悪い生徒を助けます。', hira: 'ほけんの せんせいは ぐあいが わるい せいとを たすけます。' },
+      { en: 'The librarian gives books to students.', ja: '図書館の先生は生徒に本を貸します。', hira: 'としょかんの せんせいは せいとに ほんを かします。' },
+      { en: 'The janitor cleans the school.', ja: '用務員さんは学校を掃除します。', hira: 'ようむいんさんは がっこうを そうじします。' },
+      { en: 'The counselor guides students.', ja: 'カウンセラーは生徒たちを指導します。', hira: 'かうんせらーは せいとたちを しどうします。' },
+      { en: 'The vice principal helps the teachers.', ja: '教頭先生は先生たちを助けます。', hira: 'きょうとうせんせいは せんせいたちを たすけます。' },
+      { en: 'The school lunch staff makes our lunch.', ja: '給食のスタッフは私たちの昼ごはんを作ります。', hira: 'きゅうしょくの すたっふは わたしたちの ひるごはんを つくります。' },
+      { en: 'The office worker answers the phone.', ja: '事務の人は電話に出ます。', hira: 'じむの ひとは でんわに でます。' },
+      { en: 'The teacher writes on the board.', ja: '先生は黒板に書きます。', hira: 'せんせいは こくばんに かきます。' },
+      { en: 'The students read a book.', ja: '生徒たちは本を読みます。', hira: 'せいとたちは ほんを よみます。' },
+      { en: 'The principal talks to the parents.', ja: '校長先生は保護者と話します。', hira: 'こうちょうせんせいは ほごしゃと はなします。' },
+      { en: 'The nurse checks the temperature.', ja: '保健の先生は熱をはかります。', hira: 'ほけんの せんせいは ねつを はかります。' },
+      { en: 'The librarian organizes the books.', ja: '図書館の先生は本を整理します。', hira: 'としょかんの せんせいは ほんを せいりします。' },
+      { en: 'The janitor opens the windows.', ja: '用務員さんは窓を開けます。', hira: 'ようむいんさんは まどを あけます。' },
+      { en: 'The counselor listens to the students.', ja: 'カウンセラーは生徒たちの話を聞きます。', hira: 'かうんせらーは せいとたちの はなしを ききます。' },
+      { en: 'The office worker writes an email.', ja: '事務の人はメールを書きます。', hira: 'じむの ひとは めーるを かきます。' },
+      { en: 'The lunch staff serves food.', ja: '給食のスタッフはご飯を出します。', hira: 'きゅうしょくの すたっふは ごはんを だします。' },
+    ];
+
+    const QA = [
+      { q_en:'What does the teacher do?', q_ja:'先生は何をしますか？', q_hira:'せんせいは なにを しますか？',
+        a_en:'The teacher teaches math.', a_ja:'先生は数学を教えます。', a_hira:'せんせいは すうがくを おしえます。' },
+      { q_en:'Who helps you in the library?', q_ja:'図書館では誰が手伝ってくれますか？', q_hira:'としょかんでは だれが てつだって くれますか？',
+        a_en:'The librarian gives books to students.', a_ja:'図書館の先生は生徒に本を貸します。', a_hira:'としょかんの せんせいは せいとに ほんを かします。' },
+      { q_en:'What does the janitor do?', q_ja:'用務員さんは何をしますか？', q_hira:'ようむいんさんは なにを しますか？',
+        a_en:'The janitor cleans the school.', a_ja:'用務員さんは学校を掃除します。', a_hira:'ようむいんさんは がっこうを そうじします。' },
+      { q_en:'Who manages the school?', q_ja:'学校を管理するのは誰ですか？', q_hira:'がっこうを かんりするのは だれですか？',
+        a_en:'The principal manages the school.', a_ja:'校長先生は学校を管理します。', a_hira:'こうちょうせんせいは がっこうを かんりします。' },
+      { q_en:'Who helps the teachers?', q_ja:'先生たちを助けるのは誰ですか？', q_hira:'せんせいたちを たすけるのは だれですか？',
+        a_en:'The vice principal helps the teachers.', a_ja:'教頭先生は先生たちを助けます。', a_hira:'きょうとうせんせいは せんせいたちを たすけます。' },
+      { q_en:'Who makes our lunch?', q_ja:'私たちの昼ごはんを作るのは誰ですか？', q_hira:'わたしたちの ひるごはんを つくるのは だれですか？',
+        a_en:'The school lunch staff makes our lunch.', a_ja:'給食のスタッフは私たちの昼ごはんを作ります。', a_hira:'きゅうしょくの すたっふは わたしたちの ひるごはんを つくります。' },
+      { q_en:'Who answers the phone?', q_ja:'電話に出るのは誰ですか？', q_hira:'でんわに でるのは だれですか？',
+        a_en:'The office worker answers the phone.', a_ja:'事務の人は電話に出ます。', a_hira:'じむの ひとは でんわに でます。' },
+      { q_en:'Who writes on the board?', q_ja:'黒板に書くのは誰ですか？', q_hira:'こくばんに かくのは だれですか？',
+        a_en:'The teacher writes on the board.', a_ja:'先生は黒板に書きます。', a_hira:'せんせいは こくばんに かきます。' },
+      { q_en:'Who reads a book?', q_ja:'本を読むのは誰ですか？', q_hira:'ほんを よむのは だれですか？',
+        a_en:'The students read a book.', a_ja:'生徒たちは本を読みます。', a_hira:'せいとたちは ほんを よみます。' },
+      { q_en:'What does the principal do with the parents?', q_ja:'校長先生は保護者と何をしますか？', q_hira:'こうちょうせんせいは ほごしゃと なにを しますか？',
+        a_en:'The principal talks to the parents.', a_ja:'校長先生は保護者と話します。', a_hira:'こうちょうせんせいは ほごしゃと はなします。' },
+      { q_en:'Who checks the temperature?', q_ja:'熱をはかるのは誰ですか？', q_hira:'ねつを はかるのは だれですか？',
+        a_en:'The nurse checks the temperature.', a_ja:'保健の先生は熱をはかります。', a_hira:'ほけんの せんせいは ねつを はかります。' },
+      { q_en:'Who organizes the books?', q_ja:'本を整理するのは誰ですか？', q_hira:'ほんを せいりするのは だれですか？',
+        a_en:'The librarian organizes the books.', a_ja:'図書館の先生は本を整理します。', a_hira:'としょかんの せんせいは ほんを せいりします。' },
+      { q_en:'What does the janitor open?', q_ja:'用務員さんは何を開けますか？', q_hira:'ようむいんさんは なにを あけますか？',
+        a_en:'The janitor opens the windows.', a_ja:'用務員さんは窓を開けます。', a_hira:'ようむいんさんは まどを あけます。' },
+      { q_en:'Who listens to the students?', q_ja:'生徒たちの話を聞くのは誰ですか？', q_hira:'せいとたちの はなしを きくのは だれですか？',
+        a_en:'The counselor listens to the students.', a_ja:'カウンセラーは生徒たちの話を聞きます。', a_hira:'かうんせらーは せいとたちの はなしを ききます。' },
+      { q_en:'What does the office worker write?', q_ja:'事務の人は何を書きますか？', q_hira:'じむの ひとは なにを かきますか？',
+        a_en:'The office worker writes an email.', a_ja:'事務の人はメールを書きます。', a_hira:'じむの ひとは めーるを かきます。' },
+      { q_en:'Who serves the food?', q_ja:'ご飯を出すのは誰ですか？', q_hira:'ごはんを だすのは だれですか？',
+        a_en:'The lunch staff serves food.', a_ja:'給食のスタッフはご飯を出します。', a_hira:'きゅうしょくの すたっふは ごはんを だします。' },
+    ];
+
+    const QUIZ = [
+      { cloze:'The teacher ___ math.', answers:['teaches'], ja:'先生は数学を教えます。', hira:'せんせいは すうがくを おしえます。', full:'The teacher teaches math.' },
+      { cloze:'Students ___ to the teacher.', answers:['listen'], ja:'生徒たちは先生の話を聞きます。', hira:'せいとたちは せんせいの はなしを ききます。', full:'Students listen to the teacher.' },
+      { cloze:'The principal ___ the school.', answers:['manages'], ja:'校長先生は学校を管理します。', hira:'こうちょうせんせいは がっこうを かんりします。', full:'The principal manages the school.' },
+      { cloze:'The nurse ___ sick students.', answers:['helps'], ja:'保健の先生は具合が悪い生徒を助けます。', hira:'ほけんの せんせいは ぐあいが わるい せいとを たすけます。', full:'The nurse helps sick students.' },
+      { cloze:'The librarian ___ books to students.', answers:['gives','lends','loans'], ja:'図書館の先生は生徒に本を貸します。', hira:'としょかんの せんせいは せいとに ほんを かします。', full:'The librarian gives books to students.' },
+      { cloze:'The janitor ___ the school.', answers:['cleans'], ja:'用務員さんは学校を掃除します。', hira:'ようむいんさんは がっこうを そうじします。', full:'The janitor cleans the school.' },
+      { cloze:'The counselor ___ students.', answers:['guides'], ja:'カウンセラーは生徒たちを指導します。', hira:'かうんせらーは せいとたちを しどうします。', full:'The counselor guides students.' },
+      { cloze:'The vice principal ___ the teachers.', answers:['helps'], ja:'教頭先生は先生たちを助けます。', hira:'きょうとうせんせいは せんせいたちを たすけます。', full:'The vice principal helps the teachers.' },
+      { cloze:'The lunch staff ___ our lunch.', answers:['makes','prepare','prepares'], ja:'給食のスタッフは私たちの昼ごはんを作ります。', hira:'きゅうしょくの すたっふは わたしたちの ひるごはんを つくります。', full:'The school lunch staff makes our lunch.' },
+      { cloze:'The office worker ___ the phone.', answers:['answers'], ja:'事務の人は電話に出ます。', hira:'じむの ひとは でんわに でます。', full:'The office worker answers the phone.' },
+      { cloze:'The teacher ___ on the board.', answers:['writes'], ja:'先生は黒板に書きます。', hira:'せんせいは こくばんに かきます。', full:'The teacher writes on the board.' },
+      { cloze:'The students ___ a book.', answers:['read'], ja:'生徒たちは本を読みます。', hira:'せいとたちは ほんを よみます。', full:'The students read a book.' },
+      { cloze:'The principal ___ to the parents.', answers:['talks','speaks'], ja:'校長先生は保護者と話します。', hira:'こうちょうせんせいは ほごしゃと はなします。', full:'The principal talks to the parents.' },
+      { cloze:'The nurse ___ the temperature.', answers:['checks','measures'], ja:'保健の先生は熱をはかります。', hira:'ほけんの せんせいは ねつを はかります。', full:'The nurse checks the temperature.' },
+      { cloze:'The librarian ___ the books.', answers:['organizes','arranges','sorts'], ja:'図書館の先生は本を整理します。', hira:'としょかんの せんせいは ほんを せいりします。', full:'The librarian organizes the books.' },
+      { cloze:'The janitor ___ the windows.', answers:['opens'], ja:'用務員さんは窓を開けます。', hira:'ようむいんさんは まどを あけます。', full:'The janitor opens the windows.' },
+      { cloze:'The counselor ___ to the students.', answers:['listens'], ja:'カウンセラーは生徒たちの話を聞きます。', hira:'かうんせらーは せいとたちの はなしを ききます。', full:'The counselor listens to the students.' },
+      { cloze:'The office worker ___ an email.', answers:['writes'], ja:'事務の人はメールを書きます。', hira:'じむの ひとは めーるを かきます。', full:'The office worker writes an email.' },
+      { cloze:'The lunch staff ___ food.', answers:['serves'], ja:'給食のスタッフはご飯を出します。', hira:'きゅうしょくの すたっふは ごはんを だします。', full:'The lunch staff serves food.' },
+    ];
+
+    // -------------- State & Elements --------------
+    let deck = [];
+    let index = 0;
+    let showingFront = true;
+
+    const els = {
+      mode: document.getElementById('mode'),
+      card: document.getElementById('card'),
+      label: document.getElementById('label'),
+      main: document.getElementById('main'),
+      sub: document.getElementById('sub'),
+      hira: document.getElementById('hira'),
+      counter: document.getElementById('counter'),
+      bar: document.getElementById('bar'),
+      btnPrev: document.getElementById('btnPrev'),
+      btnNext: document.getElementById('btnNext'),
+      btnFlip: document.getElementById('btnFlip'),
+      btnShuffle: document.getElementById('btnShuffle'),
+      mcArea: document.getElementById('mcArea'),
+    };
+
+    // -------------- Helpers --------------
+    function shuffle(arr){
+      for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}
+      return arr;
+    }
+    function uniqueVerbsFromQuiz(){
+      const set = new Set();
+      QUIZ.forEach(q => q.answers.forEach(a => set.add(a.toLowerCase())));
+      return Array.from(set);
+    }
+    const ALL_QUIZ_VERBS = uniqueVerbsFromQuiz();
+
+    function mcOptionsFor(item, n=4){
+      const corrects = item.answers.map(a=>a.toLowerCase());
+      const correct = corrects[0];
+      const pool = ALL_QUIZ_VERBS.filter(v => !corrects.includes(v));
+      shuffle(pool);
+      const need = Math.max(0, n-1);
+      const choices = [correct, ...pool.slice(0, need)];
+      return shuffle(choices);
+    }
+
+    // -------------- Build Decks --------------
+    function buildDeck(){
+      const mode = els.mode.value;
+      if(mode==='vocab-j2e' || mode==='vocab-e2j'){
+        const combined = [...PEOPLE, ...ROLES];
+        deck = combined.map(x=>({
+          type:'vocab',
+          front: mode==='vocab-j2e' ? x.ja : x.en,
+          back:  mode==='vocab-j2e' ? x.en : x.ja,
+          hira: x.hira,
+          sideLabelFront: mode==='vocab-j2e' ? 'Japanese → English' : 'English → Japanese',
+          sideLabelBack:  mode==='vocab-j2e' ? 'English' : 'Japanese',
+        }));
+      } else if(mode==='sentences'){
+        deck = SENTENCES.map(s=>({
+          type:'sentence',
+          front: s.ja,
+          back: s.en + '\\n' + s.ja,  // show EN + JA on back
+          hira: s.hira,
+          sideLabelFront: 'Japanese sentence',
+          sideLabelBack: 'Answer (EN + JA)',
+        }));
+      } else if(mode==='qa'){
+        deck = QA.map(q=>({
+          type:'qa',
+          front: q.q_ja,
+          back: q.a_en + '\\n' + q.a_ja, // EN + JA
+          hira: q.q_hira + '\\n' + q.a_hira,
+          sideLabelFront: 'Question (JA)',
+          sideLabelBack: 'Answer (EN + JA)',
+        }));
+      } else if(mode==='quiz'){
+        deck = QUIZ.map(q=>{
+          const choices = mcOptionsFor(q, 4); // precompute once
+          return {
+            type:'quiz',
+            front: q.cloze,
+            back: q.full + '\\n' + q.ja,
+            hira: q.hira,
+            answers: q.answers,
+            choices, // persist options for this item
+            sideLabelFront: 'Choose the missing word',
+            sideLabelBack: 'Answer (EN + JA)',
+          };
+        });
+      }
+      index = 0; showingFront = true; render();
+    }
+
+    // -------------- Render --------------
+    function render(){
+      if(deck.length===0){ els.main.textContent='—'; els.sub.textContent='No cards'; els.counter.textContent='0 / 0'; return; }
+      const item = deck[index];
+      const mode = els.mode.value;
+      els.label.textContent = showingFront ? item.sideLabelFront : item.sideLabelBack;
+      const content = showingFront ? item.front : item.back;
+
+      // Build main content + JA + hira (always show hira below any JA)
+      if((!showingFront) && (item.type==='qa' || item.type==='quiz' || item.type==='sentence') && content.includes('\\n')){
+        const [line1, line2] = content.split('\\n'); // EN, JA
+        els.main.innerHTML = `<div style="font-size:22px;font-weight:700">${line1}</div>
+                              <div class="sub" style="margin-top:8px">${line2}</div>`;
+        // Always show hira for the JA line when available
+        if(item.hira){
+          els.hira.classList.remove('hidden');
+          // If hira contains two lines (qa), show only the answer portion on back
+          if(item.type==='qa'){
+            const parts = item.hira.split('\\n');
+            const hiraToShow = showingFront ? parts[0] : (parts[1] || '');
+            els.hira.textContent = hiraToShow;
+          } else {
+            els.hira.textContent = item.hira;
+          }
+        } else { els.hira.classList.add('hidden'); els.hira.textContent=''; }
+      } else {
+        // Single-line content (e.g., Japanese front for vocab/sentences/qa questions)
+        els.main.textContent = content;
+        // If front is Japanese, show its hira. Heuristic: for vocab-j2e, front is JA; for sentence/qa fronts it's JA
+        if(showingFront && (item.type==='vocab' && els.mode.value==='vocab-j2e' || item.type==='sentence' || item.type==='qa')){
+          if(item.hira){
+            els.hira.classList.remove('hidden');
+            // For qa front, show only question hira (first line)
+            if(item.type==='qa' && item.hira.includes('\\n')){
+              els.hira.textContent = item.hira.split('\\n')[0];
+            } else {
+              els.hira.textContent = item.hira;
+            }
+          } else { els.hira.classList.add('hidden'); els.hira.textContent=''; }
+        } else {
+          els.hira.classList.add('hidden');
+          els.hira.textContent='';
+        }
+      }
+
+      // QUIZ MC only on front of quiz
+      if(mode==='quiz' && item.type==='quiz' && showingFront){
+        els.sub.textContent = 'Choose the correct word.';
+        els.mcArea.classList.remove('hidden');
+        els.mcArea.innerHTML = '';
+        item.choices.forEach(opt => {
+          const btn = document.createElement('button');
+          btn.className = 'optbtn';
+          btn.textContent = opt;
+          btn.addEventListener('click', (e)=>{
+            e.preventDefault(); e.stopPropagation();
+            const norm = (s)=>s.toLowerCase().trim();
+            const isCorrect = item.answers.map(a=>norm(a)).includes(norm(opt));
+            const allBtns = [...els.mcArea.querySelectorAll('button')];
+            allBtns.forEach(b=>b.disabled=true);
+            if(isCorrect){ btn.classList.add('ok'); } else { btn.classList.add('bad'); }
+            // Mark the correct one
+            const correctBtn = allBtns.find(b => item.answers.map(a=>norm(a)).includes(norm(b.textContent)));
+            if(correctBtn) correctBtn.classList.add('ok');
+            // brief pause so the user sees feedback, then reveal full answer
+            setTimeout(()=>{ showingFront = false; render(); }, 350);
+          }, { passive:false });
+          els.mcArea.appendChild(btn);
+        });
+      } else {
+        // hide in ALL other cases
+        els.mcArea.classList.add('hidden');
+        els.mcArea.innerHTML = '';
+        if(item.type==='quiz' && showingFront){
+          els.sub.textContent = 'Choose the correct word.';
+        } else {
+          els.sub.textContent = 'Tap / Space to flip · Swipe / ← → to navigate';
+        }
+      }
+
+      // Footer counters
+      els.counter.textContent = `${index+1} / ${deck.length}`;
+      els.bar.style.width = `${((index+1)/deck.length)*100}%`;
+
+      setHash();
+    }
+
+    // -------------- Navigation --------------
+    function prev(){ index = (index-1+deck.length)%deck.length; showingFront=true; render(); }
+    function next(){ index = (index+1)%deck.length; showingFront=true; render(); }
+    function flip(){ showingFront = !showingFront; render(); }
+    function shuffleDeck(){ deck = shuffle(deck); index=0; showingFront=true; render(); }
+
+    // -------------- URL Hash --------------
+    function setHash(){ location.hash = `#${els.mode.value}:${index}`; }
+    function readHash(){
+      const h = location.hash.replace('#','');
+      if(!h) return;
+      const [m, i] = h.split(':');
+      if(m && [...els.mode.options].some(o=>o.value===m)) els.mode.value = m;
+      if(i && !Number.isNaN(+i)) index = Math.max(0, Math.min(deck.length-1, +i));
+    }
+
+    // -------------- Events --------------
+    els.mode.addEventListener('change', ()=>{ buildDeck(); setHash(); });
+    document.getElementById('btnPrev').addEventListener('click', prev);
+    document.getElementById('btnNext').addEventListener('click', next);
+    document.getElementById('btnFlip').addEventListener('click', flip);
+    document.getElementById('btnShuffle').addEventListener('click', shuffleDeck);
+
+    // Keyboard
+    window.addEventListener('keydown', (e)=>{
+      if(e.code==='ArrowLeft'){ e.preventDefault(); prev(); }
+      else if(e.code==='ArrowRight'){ e.preventDefault(); next(); }
+      else if(e.code==='Space'){ e.preventDefault(); flip(); }
+      else if(e.key==='S' || e.key==='s'){ e.preventDefault(); shuffleDeck(); }
+      else if(e.key==='1' && els.mode.value==='quiz'){ const b=els.mcArea.querySelectorAll('button')[0]; if(b) b.click(); }
+      else if(e.key==='2' && els.mode.value==='quiz'){ const b=els.mcArea.querySelectorAll('button')[1]; if(b) b.click(); }
+      else if(e.key==='3' && els.mode.value==='quiz'){ const b=els.mcArea.querySelectorAll('button')[2]; if(b) b.click(); }
+      else if(e.key==='4' && els.mode.value==='quiz'){ const b=els.mcArea.querySelectorAll('button')[3]; if(b) b.click(); }
+    });
+
+    // Click/Touch to flip (disabled on Quiz front)
+    document.getElementById('card').addEventListener('click', (e)=>{
+      if(els.mode.value==='quiz' && showingFront) return;
+      flip();
+    }, { passive:true });
+
+    // Swipe
+    let touchStartX=null, touchStartY=null;
+    document.getElementById('card').addEventListener('touchstart', (e)=>{
+      const t=e.changedTouches[0]; touchStartX=t.clientX; touchStartY=t.clientY;
+    }, {passive:true});
+    document.getElementById('card').addEventListener('touchend', (e)=>{
+      const t=e.changedTouches[0]; if(touchStartX===null) return;
+      const dx=t.clientX - touchStartX; const dy=t.clientY - touchStartY;
+      if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)){
+        if(dx>0) prev(); else next();
+      } else if(Math.abs(dy)<10 && Math.abs(dx)<10){
+        if(!(els.mode.value==='quiz' && showingFront)) flip();
+      }
+      touchStartX=touchStartY=null;
+    }, {passive:true});
+
+    // Init
+    buildDeck();
+    readHash();
+    render();
+  </script>
+</body>
+</html>
